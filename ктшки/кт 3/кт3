@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лендинг с модификациями</title>
+    <style>
+        /* --- БАЗОВЫЕ СТИЛИ И СБРОС --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* --- 1. КАСТОМНОЕ МЕНЮ (БУРГЕР) --- */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .burger-menu {
+            display: block;
+            cursor: pointer;
+            width: 30px;
+            height: 20px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .burger-menu span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #333;
+            border-radius: 3px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .burger-menu span:nth-child(1) { top: 0px; }
+        .burger-menu span:nth-child(2) { top: 8px; }
+        .burger-menu span:nth-child(3) { top: 16px; }
+
+        /* Анимация бургера в крестик */
+        .burger-menu.active span:nth-child(1) {
+            top: 8px;
+            transform: rotate(135deg);
+        }
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0;
+            left: -60px;
+        }
+        .burger-menu.active span:nth-child(3) {
+            top: 8px;
+            transform: rotate(-135deg);
+        }
+
+        .nav-links {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 250px;
+            height: 100vh;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: right 0.4s ease;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-links.active {
+            right: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #007bff;
+        }
+
+        /* --- ОСНОВНОЙ КОНТЕНТ --- */
+        main {
+            margin-top: 70px;
+        }
+
+        /* --- ВАЙБ-БЛОК --- */
+        .vibe-block {
+            height: 60vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjU8dekK6uV4MMBwMgmUUmuBpB3ZT6ZFuPdhI2zO_DUQ&s=10') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .vibe-block h1 {
+            color: white;
+            font-size: 2.5rem;
+            max-width: 800px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        /* --- СЛАЙДЕР --- */
+        .slider-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 400px;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .slide h3 { color: white; }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.7);
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .slider-btn:hover { background: #fff; }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        /* --- КАЛЬКУЛЯТОР --- */
+        .calc-box {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover { background: #0056b3; }
+
+        .calc-result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            color: #28a745;
+        }
+
+        /* --- АККОРДЕОН (FAQ) --- */
+        .accordion {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .accordion-item {
+            background: #fff;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .accordion-header:hover { background: #f1f1f1; }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.5rem;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            content: '-';
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 20px;
+            background: #fafafa;
+        }
+
+        .accordion-body p {
+            padding-bottom: 15px;
+        }
+
+        /* --- КАРТОЧКИ С ПЕРЕВОРОТОМ --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 300px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .flip-card-front {
+            background-color: #333;
+            color: white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .flip-card-front::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+        }
+        
+        .flip-card-front h3 { position: relative; z-index: 1; color: white; }
+
+        .flip-card-back {
+            background-color: #007bff;
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* --- ФОРМА ОБРАТНОЙ СВЯЗИ --- */
+        .contact-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- ФУТЕР --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #222;
+            color: #aaa;
+        }
+
+        /* --- АДАПТИВНОСТЬ --- */
+        @media (max-width: 768px) {
+            .vibe-block h1 { font-size: 1.8rem; }
+            .slider-wrapper { height: 250px; }
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Кастомное меню (Бургер) -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">MyLanding</div>
+            <div class="burger-menu" id="burgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="nav-links" id="navLinks">
+                <a href="#vibe">Главная</a>
+                <a href="#slider">Галерея</a>
+                <a href="#calc">Калькулятор</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Контакты</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Вайб-блок -->
+        <section id="vibe" class="vibe-block">
+            <h1>«Дизайн — это не просто то, как это выглядит. Дизайн — это то, как это работает.»</h1>
+        </section>
+
+        <!-- 2. Слайдер / Карусель -->
+        <section id="slider">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Наши проекты</h2>
+                <div class="slider-container">
+                    <div class="slider-wrapper" id="sliderWrapper">
+                        <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjIuTLgR9Do3GjWEanNWUPXcUA_wft6cO4GF7fkSWFEA&s=10');">
+                            <h3>Аналитика данных</h3>
+                        </div>
+                        <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOBy1tnvg9FFhHUnRP_tHtbQZQmBumP2eNxkCLicT6uw&s=10');">
+                            <h3>Управление проектами</h3>
+                        </div>
+                        <div class="slide" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvpWDYnMhxtsEYl7_pJe2yMqRXJ7wwDYm-kBMjzFfs5w&s=10');">
+                            <h3>Командная работа</h3>
+                        </div>
+                    </div>
+                    <button class="slider-btn prev-btn" id="prevBtn">&#10094;</button>
+                    <button class="slider-btn next-btn" id="nextBtn">&#10095;</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Калькулятор -->
+        <section id="calc">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Калькулятор стоимости</h2>
+                <div class="calc-box">
+                    <div class="form-group">
+                        <label for="quantity">Количество (шт.)</label>
+                        <input type="number" id="quantity" placeholder="Например: 10" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Цена за единицу (руб.)</label>
+                        <input type="number" id="price" placeholder="Например: 500" min="0" value="500">
+                    </div>
+                    <button class="btn" id="calcBtn">Рассчитать</button>
+                    <div class="calc-result" id="calcResult"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Переворот карточки (Нестандартный блок) -->
+        <section id="portfolio">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Наши преимущества</h2>
+                <div class="cards-grid">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <!-- Новая картинка 1 -->
+                            <div class="flip-card-front" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRa_UX9Qz_lTu3wmApV1bXyHHxWNPdvsMbudjxe2IaoIw&s=10');">
+                                <h3>Команда</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <h3>Профессионалы</h3>
+                                <p>Наши специалисты имеют опыт более 5 лет в разработке.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <!-- Новая картинка 2 -->
+                            <div class="flip-card-front" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS2iYnQ3PE1l-tljJtEwn_mFSwIXUaSPDP6Jblbx_7fA&s=10');">
+                                <h3>Технологии</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <h3>Современный стек</h3>
+                                <p>Используем только актуальные инструменты и фреймворки.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <!-- Новая картинка 3 -->
+                            <div class="flip-card-front" style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlGIRj5IPBD0HmZwc5H5ZZw4g7gvz2ZzWr48JXpYX0cw&s=10');">
+                                <h3>Поддержка</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <h3>24/7</h3>
+                                <p>Мы всегда на связи и готовы помочь с любым вопросом.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Аккордеон (FAQ) -->
+        <section id="faq">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Часто задаваемые вопросы</h2>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header">Сколько времени занимает разработка?</button>
+                        <div class="accordion-body">
+                            <p>В среднем, создание лендинга занимает от 3 до 7 рабочих дней, в зависимости от сложности задач.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header">Вы предоставляете гарантию?</button>
+                        <div class="accordion-body">
+                            <p>Да, мы предоставляем гарантию 1 год на все виды работ и бесплатно исправляем ошибки.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header">Как происходит оплата?</button>
+                        <div class="accordion-body">
+                            <p>Оплата происходит в два этапа: 50% предоплата перед началом работ и 50% после сдачи проекта.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Форма обратной связи -->
+        <section id="contact">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Свяжитесь с нами</h2>
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="example@mail.ru" required>
+                    </div>
+                    <button type="submit" class="btn">Отправить</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <footer>
+        <p>&copy; 2024 MyLanding. Все права защищены.</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Меню (Бургер) ---
+            const burgerMenu = document.getElementById('burgerMenu');
+            const navLinks = document.getElementById('navLinks');
+
+            burgerMenu.addEventListener('click', () => {
+                burgerMenu.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // Закрываем меню при клике на ссылку
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    burgerMenu.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // --- 2. Слайдер ---
+            const sliderWrapper = document.getElementById('sliderWrapper');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                if (index >= slides.length) currentSlide = 0;
+                if (index < 0) currentSlide = slides.length - 1;
+                sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                currentSlide++;
+                showSlide(currentSlide);
+            });
+
+            prevBtn.addEventListener('click', () => {
+                currentSlide--;
+                showSlide(currentSlide);
+            });
+
+            // --- 3. Калькулятор ---
+            const calcBtn = document.getElementById('calcBtn');
+            const quantityInput = document.getElementById('quantity');
+            const priceInput = document.getElementById('price');
+            const calcResult = document.getElementById('calcResult');
+
+            calcBtn.addEventListener('click', () => {
+                const qty = parseFloat(quantityInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+                const total = qty * price;
+                calcResult.textContent = `Итого: ${total.toLocaleString('ru-RU')} руб.`;
+            });
+
+            // --- 4. Аккордеон (FAQ) ---
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.parentElement;
+                    
+                    // Закрываем все остальные
+                    document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.accordion-body').style.maxHeight = null;
+                        }
+                    });
+
+                    // Переключаем текущий
+                    item.classList.toggle('active');
+                    const body = item.querySelector('.accordion-body');
+
+                    if (item.classList.contains('active')) {
+                        body.style.maxHeight = body.scrollHeight + "px";
+                    } else {
+                        body.style.maxHeight = null;
+                    }
+                });
+            });
+
+            // --- 5. Обработка формы ---
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                alert(`Спасибо, ${name}! Мы свяжемся с вами по адресу ${email} в ближайшее время.`);
+                contactForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
+
+
